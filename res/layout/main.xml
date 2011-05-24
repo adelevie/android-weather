@@ -12,7 +12,7 @@
     android:gravity="center_horizontal">
 
 <Button android:layout_width="wrap_content" android:layout_height="wrap_content"
- android:id="@+id/btnJSON" android:text="Get Weather!"></Button>
+ android:id="@+id/btnJSON" android:text="Get Weather Info"></Button>
 </LinearLayout>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
@@ -22,7 +22,7 @@ android:layout_height="wrap_content">
 <TextView  
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
-    android:text="default text" 
+    android:text="" 
     android:layout_gravity="center_horizontal"
     android:id="@+id/txtData" 
     />
