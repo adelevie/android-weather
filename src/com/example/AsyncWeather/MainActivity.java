@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.net.URLDecoder;
+import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -15,24 +17,28 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ListView;
 
 public class MainActivity extends Activity {
-	Button btnXML;
+    private ListView lv1;
+   // private String lv_arr[]={"Click up there!^^"};
+    private ArrayList<String> weatherData = new ArrayList<String>(); 
+
     Button btnJSON;
-    TextView tvData;
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
-
-        tvData = (TextView) findViewById(R.id.txtData);
         
+        lv1=(ListView)findViewById(R.id.ListView01);
+        lv1.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1 , weatherData));
+                
         btnJSON = (Button) findViewById(R.id.btnJSON);
         btnJSON.setOnClickListener(new Button.OnClickListener()
+
         {
             public void onClick(View v)
             {
@@ -41,7 +47,7 @@ public class MainActivity extends Activity {
         });
 
     }
-    
+        
     
     void examineJSONFile()
     {
@@ -59,15 +65,28 @@ public class MainActivity extends Activity {
         
             String currentWeatherDescription = currentCondition.getJSONObject(0).getJSONArray("weatherDesc").getJSONObject(0).getString("value");
             String currentTemperature = currentCondition.getJSONObject(0).getString("temp_F");
-            
-            x = currentTemperature + " degrees Farenheit\n\n";
+                        
+            x = currentTemperature + " F°";
             x += currentWeatherDescription;
-
-            tvData.setText(x);
+            
+            weatherData.add(x); //current weather
+            weatherData.add("");
+            weatherData.add("5 day forecast:"); 
+            weatherData.add("day 1"); // day 1
+            weatherData.add("day 2"); // day 2
+            weatherData.add("day 3"); // day 3
+            weatherData.add("day 4"); // day 4
+            weatherData.add("day 5"); // day 5
+            
+            
+            //tvData.setText(x);
+            lv1=(ListView)findViewById(R.id.ListView01);
+            lv1.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1 , weatherData));
+            
         }
         catch (Exception je)
         {
-            tvData.setText("Error w/file: " + je.getMessage());
+            
         }
     }
     

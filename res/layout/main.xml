@@ -15,19 +15,13 @@
  android:id="@+id/btnJSON" android:text="Get Weather Info"></Button>
 </LinearLayout>
 
+<ListView android:id="@+id/ListView01"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content" />
+
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
 android:id="@+id/ScrollView01" android:layout_width="fill_parent"
 android:layout_height="wrap_content">
-
-<TextView  
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text="" 
-    android:layout_gravity="center_horizontal"
-    android:id="@+id/txtData" 
-    />
-
-
 </ScrollView>
 
 </LinearLayout>
