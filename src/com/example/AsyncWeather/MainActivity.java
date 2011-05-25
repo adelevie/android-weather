@@ -15,6 +15,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -23,8 +25,7 @@ import android.widget.ListView;
 
 public class MainActivity extends Activity {
     private ListView lv1;
-   // private String lv_arr[]={"Click up there!^^"};
-    private ArrayList<String> weatherData = new ArrayList<String>(); 
+    private ArrayList<String> weatherData = new ArrayList<String>();
 
     Button btnJSON;
     /** Called when the activity is first created. */
@@ -34,7 +35,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.main);
         
         lv1=(ListView)findViewById(R.id.ListView01);
-        lv1.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1 , weatherData));
+        //lv1.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1 , weatherData));
                 
         btnJSON = (Button) findViewById(R.id.btnJSON);
         btnJSON.setOnClickListener(new Button.OnClickListener()
@@ -42,14 +43,35 @@ public class MainActivity extends Activity {
         {
             public void onClick(View v)
             {
-                examineJSONFile();
+            	new AsyncGetUrl().execute();
             }
         });
 
     }
+    
+    private class AsyncGetUrl extends AsyncTask<Void, Void, Void> {
+    	private final ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+    	
+    	protected void onPreExecute() {
+            this.dialog.setMessage("Loading...");
+            this.dialog.show();
+    	}
+    	
+		@Override
+		protected Void doInBackground(Void... params) {
+			examineJSON();
+			return null;
+		}
+		
+		protected void onPostExecute(final Void unused) {
+	        lv1.setAdapter(new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1 , weatherData));
+	        this.dialog.dismiss();
+		}
+
+    }
         
     
-    void examineJSONFile()
+    void examineJSON()
     {
         try
         {   
@@ -81,7 +103,6 @@ public class MainActivity extends Activity {
             }
 
             lv1=(ListView)findViewById(R.id.ListView01);
-            lv1.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1 , weatherData));
             
         }
         catch (Exception je)
@@ -129,4 +150,6 @@ public class MainActivity extends Activity {
                    // any cleanup code...
                 }
             } 
+	
+	
 }
