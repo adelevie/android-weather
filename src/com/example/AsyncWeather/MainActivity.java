@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
@@ -12,6 +11,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -52,9 +52,9 @@ public class MainActivity extends Activity {
     void examineJSONFile()
     {
         try
-        {
-            String x = "";
-            
+        {   
+        	weatherData.clear(); //clear list if button is pressed again
+        	
             String weatherUrl = "http://free.worldweatheronline.com/feed/weather.ashx?q=16803&format=json&num_of_days=5&key=586dac13bc212929112804";            
             String jsontext = getStringContent(weatherUrl);
 
@@ -62,24 +62,24 @@ public class MainActivity extends Activity {
             JSONObject data = weather.getJSONObject("data");
             JSONArray currentCondition = new JSONArray(data.getString("current_condition"));
             
-        
             String currentWeatherDescription = currentCondition.getJSONObject(0).getJSONArray("weatherDesc").getJSONObject(0).getString("value");
             String currentTemperature = currentCondition.getJSONObject(0).getString("temp_F");
                         
-            x = currentTemperature + " F°";
-            x += currentWeatherDescription;
+            String currentWeather = currentTemperature + " F° ";
+            currentWeather += currentWeatherDescription;
             
-            weatherData.add(x); //current weather
+            JSONArray weatherForecast = data.getJSONArray("weather");    
+            
+            weatherData.add("Current Conditions");
+            weatherData.add(currentWeather); //current weather
+            
             weatherData.add("");
-            weatherData.add("5 day forecast:"); 
-            weatherData.add("day 1"); // day 1
-            weatherData.add("day 2"); // day 2
-            weatherData.add("day 3"); // day 3
-            weatherData.add("day 4"); // day 4
-            weatherData.add("day 5"); // day 5
+            weatherData.add("Five Day Forecast"); 
             
-            
-            //tvData.setText(x);
+            for(int i = 0 ; i < weatherForecast.length(); i++){
+            	weatherData.add(formatForecast(weatherForecast.getJSONObject(i)));
+            }
+
             lv1=(ListView)findViewById(R.id.ListView01);
             lv1.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1 , weatherData));
             
@@ -90,7 +90,17 @@ public class MainActivity extends Activity {
         }
     }
     
-    public static String getStringContent(String uri) throws Exception {
+    private String formatForecast(JSONObject day) throws JSONException {
+    	String result = "";
+    	String date = day.getString("date");
+    	String high = day.getString("tempMaxF");
+    	String low = day.getString("tempMinF");
+    	result = date + ": Hi " + high + "F° - " + "Lo " + low + "F°";
+    	return result;
+	}
+
+
+	public static String getStringContent(String uri) throws Exception {
 
         try {
             HttpClient client = new DefaultHttpClient();
